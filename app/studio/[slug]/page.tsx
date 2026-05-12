@@ -43,6 +43,7 @@ export default function StudioPage({ params }: StudioPageProps) {
   const sections = useAppSelector((state) => state.draftPage.page?.sections || [])
   const publishStatus = useAppSelector((state) => state.publish.status)
   const publishVersion = useAppSelector((state) => state.publish.currentVersion)
+  const publishError = useAppSelector((state) => state.publish.errorMessage)
   const [role, setRole] = useState<Role>('viewer')
 
   useEffect(() => {
@@ -77,10 +78,10 @@ export default function StudioPage({ params }: StudioPageProps) {
       return publishVersion ? `Published ${publishVersion}` : 'Published'
     }
     if (publishStatus === 'error') {
-      return 'Publish failed'
+      return publishError || 'Publish failed'
     }
     return 'Idle'
-  }, [publishStatus, publishVersion])
+  }, [publishError, publishStatus, publishVersion])
 
   const handlePublish = async () => {
     if (!page) {
@@ -94,12 +95,18 @@ export default function StudioPage({ params }: StudioPageProps) {
       const response = await fetch('/api/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ page, slug: params.slug }),
       })
 
       if (!response.ok) {
+        const errorBody = (await response
+          .json()
+          .catch(() => ({ message: 'Publish failed' }))) as {
+          message?: string
+        }
         dispatch(setStatus('error'))
-        dispatch(setErrorMessage('Publish failed'))
+        dispatch(setErrorMessage(errorBody.message || 'Publish failed'))
         return
       }
 
