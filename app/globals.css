@@ -1,9 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --font-sans: 'Space Grotesk', 'Noto Sans', 'Liberation Sans', sans-serif;
+  --font-display: 'Fraunces', 'Space Grotesk', 'Noto Serif', serif;
+  --ink-900: #0b1220;
+  --ink-700: #1f2a44;
+  --mist-50: #f5f7fb;
+  --mist-100: #eef2f6;
+  --teal-400: #2dd4bf;
+  --amber-400: #fbbf24;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--mist-50);
+  color: var(--ink-900);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.animate-rise {
+  animation: rise 0.7s ease-out both;
+}
+
+.animate-rise-delay-1 {
+  animation: rise 0.8s ease-out both;
+  animation-delay: 120ms;
+}
+
+.animate-rise-delay-2 {
+  animation: rise 0.85s ease-out both;
+  animation-delay: 220ms;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 :focus-visible {
