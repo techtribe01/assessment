@@ -6,19 +6,27 @@ export interface TestimonialSectionProps {
   quote: string
   author: string
   role?: string
+  company?: string
 }
 
-export default function TestimonialSection({ quote, author, role }: TestimonialSectionProps) {
+export default function TestimonialSection({ quote, author, role, company }: TestimonialSectionProps) {
   return (
-    <section className="py-16 px-6 max-w-4xl mx-auto text-center" tabIndex={0}>
-      <blockquote cite="#" className="mb-6">
-        <p className="text-2xl md:text-3xl font-medium italic text-gray-900">
-          &quot;{quote}&quot;
-        </p>
-      </blockquote>
-      <div className="flex flex-col items-center">
-        <h4 className="font-bold text-lg text-gray-900">{author}</h4>
-        {role && <span className="text-gray-500 mt-1">{role}</span>}
+    <section className="bg-gray-900 py-16 px-6 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" tabIndex={0}>
+      <div className="max-w-2xl mx-auto text-center">
+        <div className="text-6xl text-gray-500 font-serif leading-none mb-4" aria-hidden="true">&ldquo;</div>
+        <blockquote cite="#" className="mb-8">
+          <p className="text-xl md:text-2xl font-medium italic text-white leading-relaxed">
+            {quote}
+          </p>
+        </blockquote>
+        <div className="flex flex-col items-center">
+          <h4 className="font-bold text-lg text-white">{author}</h4>
+          {(role || company) && (
+            <span className="text-sm text-gray-400 mt-1">
+              {role}{role && company ? ' at ' : ''}{company}
+            </span>
+          )}
+        </div>
       </div>
     </section>
   )
