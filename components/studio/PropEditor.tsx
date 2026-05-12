@@ -143,6 +143,173 @@ export default function PropEditor() {
     )
   }
 
+  if (section.type === 'featureGrid') {
+    const rawFeatures = Array.isArray(section.props.features)
+      ? section.props.features
+      : []
+    const baseFeatures = rawFeatures.length > 0 ? rawFeatures : [{}, {}, {}]
+    const features = baseFeatures.map((item) => {
+      const feature = typeof item === 'object' && item !== null ? item : {}
+      return {
+        title: String((feature as { title?: unknown }).title || ''),
+        description: String((feature as { description?: unknown }).description || ''),
+        icon: String((feature as { icon?: unknown }).icon || ''),
+      }
+    })
+
+    return (
+      <div className="space-y-6">
+        {features.map((feature, index) => (
+          <div key={index} className="rounded-lg border border-slate-200 p-4">
+            <div className="space-y-2">
+              <Label htmlFor={`feature-${index}-title`}>Feature Title</Label>
+              <Input
+                id={`feature-${index}-title`}
+                value={feature.title}
+                onChange={(event) => {
+                  const next = features.map((item, itemIndex) =>
+                    itemIndex === index
+                      ? { ...item, title: event.target.value }
+                      : item,
+                  )
+                  dispatch(
+                    updateSectionProp({
+                      sectionId: section.id,
+                      key: 'features',
+                      value: next,
+                    }),
+                  )
+                }}
+              />
+            </div>
+            <div className="mt-3 space-y-2">
+              <Label htmlFor={`feature-${index}-description`}>
+                Description
+              </Label>
+              <Input
+                id={`feature-${index}-description`}
+                value={feature.description}
+                onChange={(event) => {
+                  const next = features.map((item, itemIndex) =>
+                    itemIndex === index
+                      ? { ...item, description: event.target.value }
+                      : item,
+                  )
+                  dispatch(
+                    updateSectionProp({
+                      sectionId: section.id,
+                      key: 'features',
+                      value: next,
+                    }),
+                  )
+                }}
+              />
+            </div>
+            <div className="mt-3 space-y-2">
+              <Label htmlFor={`feature-${index}-icon`}>
+                Icon (emoji or text)
+              </Label>
+              <Input
+                id={`feature-${index}-icon`}
+                value={feature.icon}
+                onChange={(event) => {
+                  const next = features.map((item, itemIndex) =>
+                    itemIndex === index
+                      ? { ...item, icon: event.target.value }
+                      : item,
+                  )
+                  dispatch(
+                    updateSectionProp({
+                      sectionId: section.id,
+                      key: 'features',
+                      value: next,
+                    }),
+                  )
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (section.type === 'testimonial') {
+    const quote = String(section.props.quote || '')
+    const author = String(section.props.author || '')
+    const role = String(section.props.role || '')
+    const company = String(section.props.company || '')
+
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="testimonial-quote">Quote</Label>
+          <Input
+            id="testimonial-quote"
+            value={quote}
+            onChange={(event) =>
+              dispatch(
+                updateSectionProp({
+                  sectionId: section.id,
+                  key: 'quote',
+                  value: event.target.value,
+                }),
+              )
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="testimonial-author">Author</Label>
+          <Input
+            id="testimonial-author"
+            value={author}
+            onChange={(event) =>
+              dispatch(
+                updateSectionProp({
+                  sectionId: section.id,
+                  key: 'author',
+                  value: event.target.value,
+                }),
+              )
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="testimonial-role">Role</Label>
+          <Input
+            id="testimonial-role"
+            value={role}
+            onChange={(event) =>
+              dispatch(
+                updateSectionProp({
+                  sectionId: section.id,
+                  key: 'role',
+                  value: event.target.value,
+                }),
+              )
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="testimonial-company">Company</Label>
+          <Input
+            id="testimonial-company"
+            value={company}
+            onChange={(event) =>
+              dispatch(
+                updateSectionProp({
+                  sectionId: section.id,
+                  key: 'company',
+                  value: event.target.value,
+                }),
+              )
+            }
+          />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="rounded-lg border border-dashed border-slate-200 px-4 py-6 text-sm text-slate-500">
       Select a section to edit

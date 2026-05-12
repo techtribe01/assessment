@@ -27,7 +27,7 @@ test('CTA button is interactive', async ({ page }) => {
     return
   }
 
-  const cta = page.locator('a[href]').first()
+  const cta = page.locator('a[href="/studio/home"]')
   await expect(cta).toBeVisible()
   await cta.focus()
   await expect(cta).toBeFocused()
