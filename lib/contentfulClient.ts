@@ -107,6 +107,6 @@ export async function getAllSlugs(): Promise<string[]> {
   } as Record<string, unknown>)
 
   return entries.items
-    .map((entry) => entry.fields?.slug)
+    .map((entry) => entry.fields?.slug as string | undefined)
     .filter((slug): slug is string => Boolean(slug))
 }

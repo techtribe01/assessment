@@ -13,12 +13,14 @@ const draftPersistConfig = {
   whitelist: ['draftPage'],
 }
 
+const rootReducer = {
+  draftPage: persistReducer(draftPersistConfig, draftPageReducer) as unknown as typeof draftPageReducer,
+  ui: uiReducer,
+  publish: publishReducer,
+}
+
 export const store = configureStore({
-  reducer: {
-    draftPage: persistReducer(draftPersistConfig, draftPageReducer),
-    ui: uiReducer,
-    publish: publishReducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
