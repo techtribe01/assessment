@@ -14,7 +14,9 @@ export default async function PreviewPage({
 }: PreviewPageProps) {
   try {
     const previewFlag = searchParams?.preview
-    const isPreview = previewFlag === 'true' || previewFlag === '1'
+    const isPreview = previewFlag
+      ? previewFlag === 'true' || previewFlag === '1'
+      : true
     const page = await getPage(params.slug, isPreview)
     const validated = validatePage(page)
 
@@ -32,7 +34,7 @@ export default async function PreviewPage({
             const SectionComponent = getSection(section.type)
             return (
               <ErrorBoundary key={section.id}>
-                <SectionComponent {...section.props} />
+                <SectionComponent {...(section.props as object)} />
               </ErrorBoundary>
             )
           })}

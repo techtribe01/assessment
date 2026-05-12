@@ -16,6 +16,7 @@ type ContentfulPageFields = {
 }
 
 type ContentfulSectionFields = {
+  sectionId?: string
   type?: string
   props?: Record<string, unknown>
 }
@@ -50,28 +51,6 @@ const previewClient = createClient({
   host: 'preview.contentful.com',
 })
 
-function mapSection(entry: ContentfulEntry<ContentfulSectionFields>): Section {
-  const fields = entry.fields || {}
-
-  return {
-    id: entry.sys?.id || '',
-    type: (fields.type || 'hero') as Section['type'],
-    props: fields.props || {},
-  }
-}
-
-function mapPage(entry: ContentfulEntry<ContentfulPageFields>): Page {
-  const fields = entry.fields || {}
-  const sections = (fields.sections || []).map(mapSection)
-
-  return {
-    pageId: fields.pageId || entry.sys?.id || '',
-    slug: fields.slug || '',
-    title: fields.title || '',
-    sections,
-  }
-}
-
 export async function getPage(slug: string, preview = false): Promise<Page> {
   const client = preview ? previewClient : deliveryClient
 
@@ -83,18 +62,44 @@ export async function getPage(slug: string, preview = false): Promise<Page> {
     getEnv('CONTENTFUL_ACCESS_TOKEN')
   }
 
-  const entries = await client.getEntries<ContentfulPageSkeleton>({
+  const response = await client.getEntries({
     content_type: 'page',
     'fields.slug': slug,
     include: 2,
   } as Record<string, unknown>)
 
-  const entry = entries.items[0]
+  const entry = response.items?.[0] as ContentfulEntry<ContentfulPageFields> | undefined
   if (!entry) {
     throw new Error(`Page with slug "${slug}" not found.`)
   }
 
-  return mapPage(entry)
+  const sections = (entry.fields?.sections || []).map((sectionRef: any) => {
+    const sectionEntry = sectionRef?.fields
+      ? sectionRef
+      : response.includes?.Entry?.find(
+          (e: any) => e.sys.id === sectionRef.sys.id,
+        )
+
+    const fields = sectionEntry?.fields || {}
+    const rawProps = fields?.props
+    const props =
+      rawProps && typeof rawProps === 'object' && !Array.isArray(rawProps)
+        ? rawProps
+        : {}
+
+    return {
+      id: fields?.sectionId ?? sectionRef.sys?.id ?? sectionEntry?.sys?.id ?? '',
+      type: (fields?.type || 'hero') as Section['type'],
+      props,
+    }
+  })
+
+  return {
+    pageId: entry.fields?.pageId || entry.sys?.id || '',
+    slug: entry.fields?.slug || '',
+    title: entry.fields?.title || '',
+    sections,
+  }
 }
 
 export async function getAllSlugs(): Promise<string[]> {

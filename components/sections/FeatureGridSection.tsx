@@ -9,7 +9,7 @@ export interface Feature {
 }
 
 export interface FeatureGridSectionProps {
-  features?: Feature[]
+  features?: Feature[] | null
 }
 
 const placeholderFeatures: Feature[] = [
@@ -19,7 +19,8 @@ const placeholderFeatures: Feature[] = [
 ]
 
 export default function FeatureGridSection({ features }: FeatureGridSectionProps) {
-  const displayFeatures = features && features.length > 0 ? features : placeholderFeatures
+  const featureList = features ?? placeholderFeatures
+  const displayFeatures = featureList.length > 0 ? featureList : placeholderFeatures
 
   return (
     <section className="py-16 px-8 bg-gray-50">

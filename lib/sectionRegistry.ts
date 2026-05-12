@@ -17,9 +17,7 @@ export const sectionRegistry: SectionRegistry = {
 }
 
 export function getSection(type: string): ComponentType<any> {
-  if (type in sectionRegistry) {
-    return sectionRegistry[type as SectionType]
-  }
-
-  return UnsupportedSection
+  return type in sectionRegistry
+    ? sectionRegistry[type as SectionType]
+    : UnsupportedSection
 }
